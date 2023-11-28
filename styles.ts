@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const absoluteStretch = {
-  position: 'absolute',
+  position: 'absolute' as 'absolute',
   top: 0,
   left: 0,
   bottom: 0,

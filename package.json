@@ -4,8 +4,8 @@
   "description": "A simple customizable React Native component to create side menus.",
   "main": "build/index.js",
   "scripts": {
-    "build": "babel index.js styles.js -d build",
-    "prepublish": "babel index.js styles.js -d build"
+    "build": "tsc && babel build/index.js build/styles.js",
+    "prepublish": "tsc && babel build/index.js build/styles.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,9 @@
     "@babel/plugin-transform-react-jsx": "^7.17.3",
     "@babel/preset-env": "^7.16.11",
     "@react-native/babel-preset": "^0.74.0",
+    "@react-native/typescript-config": "^0.74.0",
+    "@types/jest": "^29.5.10",
+    "@types/react": "^18.2.39",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^8.12.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -43,6 +46,8 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "react": "^18.2.0",
-    "react-native": "^0.72.7"
-  }
+    "react-native": "^0.72.7",
+    "typescript": "^5.3.2"
+  },
+  "files": ["build"]
 }

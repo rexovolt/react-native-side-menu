@@ -1,38 +1,103 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {
   PanResponder,
   View,
   Dimensions,
   Animated,
   TouchableWithoutFeedback,
+  ViewStyle,
+  GestureResponderEvent,
+  type PanResponderInstance,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './styles';
 
 type WindowDimensions = { width: number, height: number };
 
-type Props = {
-  edgeHitWidth: number,
-  toleranceX: number,
-  toleranceY: number,
-  menuPosition: 'left' | 'right',
-  onChange: Function,
-  onMove: Function,
-  onSliding: Function,
-  openMenuOffset: number,
-  hiddenMenuOffset: number,
-  disableGestures: Function | bool,
-  animationFunction: Function,
-  onAnimationComplete: Function,
-  onStartShouldSetResponderCapture: Function,
-  isOpen: bool,
-  bounceBackOnOverdraw: bool,
-  autoClosing: bool,
-  allowOverlayPressPropagation: bool,
-  overlayColor: string,
-  overlayOpacity: number,
-  animateOverlayOpacity: bool
-};
+interface ReactNativeSideMenuProps {
+  /**
+   * Menu component
+   */
+  menu: ReactNode;
+  /**
+   * Props driven control over menu open state
+   * @default false
+   */
+  isOpen?: boolean;
+  /**
+   * Content view left margin if menu is opened
+   */
+  openMenuOffset?: number;
+  /**
+   * Content view left margin if menu is hidden
+   */
+  hiddenMenuOffset?: number;
+  /**
+   * Edge distance on content view to open side menu, defaults to 60
+   */
+  edgeHitWidth?: number;
+  /**
+   * X axis tolerance
+   */
+  toleranceX?: number;
+  /**
+   * Y axis tolerance
+   */
+  toleranceY?: number;
+  /**
+   * Disable whether the menu can be opened with gestures or not
+   * @default false
+   */
+  disableGestures?: boolean;
+  /**
+   * Function that accepts event as an argument and specify if side-menu should react on the touch or not.
+   * Check https://facebook.github.io/react-native/docs/gesture-responder-system.html for more details
+   */
+  onStartShouldSetResponderCapture?: (e: GestureResponderEvent) => boolean;
+  /**
+   * Callback on menu open/close. Is passed isOpen as an argument
+   */
+  onChange?: (isOpen: boolean) => void;
+  /**
+   * Callback on menu move. Is passed left as an argument
+   */
+  onMove?: (left: number) => void;
+  /**
+   * Callback when menu is sliding. It returns a decimal from 0 to 1 which represents the percentage of menu offset between hiddenMenuOffset and openMenuOffset.
+   */
+  onSliding?: (fraction: number) => void;
+  /**
+   * @default left
+   */
+  menuPosition?: 'left' | 'right';
+  animationFunction?: (prop: Animated.Value, value: number) => Animated.CompositeAnimation;
+  animationStyle?: (value: number) => ViewStyle;
+  /**
+   * Callback when menu animation has completed.
+   */
+  onAnimationComplete?: (event: Animated.EndCallback) => void;
+  /**
+   * When true, content view will bounce back to openMenuOffset when dragged further
+   * @default true
+   */
+  bounceBackOnOverdraw?: boolean;
+  /**
+   * When true, menu close automatically as soon as an event occurs
+   * @default true
+   */
+  autoClosing?: boolean;
+  /**
+   * When true, press events on the overlay can be propagated to the buttons inside your page
+   * @default false
+   */
+  allowOverlayPressPropagation?: boolean;
+  /**
+   * Page overlay color when sidebar open
+   * @default transparent
+   */
+  overlayColor?: string;
+  children?: ReactNode;
+}
 
 type Event = {
   nativeEvent: {
@@ -60,25 +125,26 @@ function shouldOpenMenu(dx: number): boolean {
   return dx > barrierForward;
 }
 
-export default class SideMenu extends React.PureComponent {
-  onLayoutChange: Function;
+export default class SideMenu extends React.Component<ReactNativeSideMenuProps, State> {
+  responder: PanResponderInstance
   onStartShouldSetResponderCapture: Function;
-  onMoveShouldSetPanResponder: Function;
-  onPanResponderMove: Function;
-  onPanResponderRelease: Function;
-  onPanResponderTerminate: Function;
-  state: State;
+  onMoveShouldSetPanResponder: () => boolean;
+  onPanResponderMove: () => void;
+  onPanResponderRelease: () => void;
+  onPanResponderTerminate: () => void;
   prevLeft: number;
   isOpen: boolean;
 
-  constructor(props: Props) {
+  constructor(props: ReactNativeSideMenuProps) {
     super(props);
-
+    
     this.prevLeft = 0;
     this.isOpen = !!props.isOpen;
 
+    const openMenuOffset = props.openMenuOffset ?? deviceScreen.width * (2 / 3);
+
     const initialMenuPositionMultiplier = props.menuPosition === 'right' ? -1 : 1;
-    const openOffsetMenuPercentage = props.openMenuOffset / deviceScreen.width;
+    const openOffsetMenuPercentage = openMenuOffset / deviceScreen.width;
     const hiddenMenuOffsetPercentage = props.hiddenMenuOffset / deviceScreen.width;
     const left: Animated.Value = new Animated.Value(
       props.isOpen
@@ -101,7 +167,7 @@ export default class SideMenu extends React.PureComponent {
       hiddenMenuOffsetPercentage,
       hiddenMenuOffset: deviceScreen.width * hiddenMenuOffsetPercentage,
       left,
-    };
+    } as State;
 
     this.state.left.addListener(({ value }) => this.props.onSliding(Math.abs((value - this.state.hiddenMenuOffset) / (this.state.openMenuOffset - this.state.hiddenMenuOffset))));
   }
@@ -116,7 +182,7 @@ export default class SideMenu extends React.PureComponent {
     });
   }
 
-  UNSAFE_componentWillReceiveProps(props: Props): void {
+  UNSAFE_componentWillReceiveProps(props: ReactNativeSideMenuProps): void {
     if (typeof props.isOpen !== 'undefined' && this.isOpen !== props.isOpen && (props.autoClosing || this.isOpen === false)) {
       this.openMenu(props.isOpen);
     }
@@ -281,26 +347,26 @@ export default class SideMenu extends React.PureComponent {
   }
 }
 
-SideMenu.propTypes = {
-  edgeHitWidth: PropTypes.number,
-  toleranceX: PropTypes.number,
-  toleranceY: PropTypes.number,
-  menuPosition: PropTypes.oneOf(['left', 'right']),
-  onChange: PropTypes.func,
-  onMove: PropTypes.func,
-  children: PropTypes.node,
-  menu: PropTypes.node,
-  openMenuOffset: PropTypes.number,
-  hiddenMenuOffset: PropTypes.number,
-  animationStyle: PropTypes.func,
-  disableGestures: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
-  animationFunction: PropTypes.func,
-  onAnimationComplete: PropTypes.func,
-  onStartShouldSetResponderCapture: PropTypes.func,
-  isOpen: PropTypes.bool,
-  bounceBackOnOverdraw: PropTypes.bool,
-  autoClosing: PropTypes.bool,
-};
+// SideMenu.propTypes = {
+//   edgeHitWidth: PropTypes.number,
+//   toleranceX: PropTypes.number,
+//   toleranceY: PropTypes.number,
+//   menuPosition: PropTypes.oneOf(['left', 'right']),
+//   onChange: PropTypes.func,
+//   onMove: PropTypes.func,
+//   children: PropTypes.node,
+//   menu: PropTypes.node,
+//   openMenuOffset: PropTypes.number,
+//   hiddenMenuOffset: PropTypes.number,
+//   animationStyle: PropTypes.func,
+//   disableGestures: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+//   animationFunction: PropTypes.func,
+//   onAnimationComplete: PropTypes.func,
+//   onStartShouldSetResponderCapture: PropTypes.func,
+//   isOpen: PropTypes.bool,
+//   bounceBackOnOverdraw: PropTypes.bool,
+//   autoClosing: PropTypes.bool,
+// };
 
 SideMenu.defaultProps = {
   toleranceY: 10,
