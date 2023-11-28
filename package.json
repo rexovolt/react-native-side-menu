@@ -1,11 +1,11 @@
 {
   "name": "@rexovolt/react-native-side-menu",
-  "version": "1.3.4",
+  "version": "2.0.0",
   "description": "A simple customizable React Native component to create side menus.",
   "main": "build/index.js",
   "scripts": {
-    "build": "tsc && babel build/index.js build/styles.js",
-    "prepublish": "tsc && babel build/index.js build/styles.js"
+    "build": "tsc || babel build/index.js build/styles.js -d build",
+    "prepublish": "tsc || babel build/index.js build/styles.js -d build"
   },
   "repository": {
     "type": "git",

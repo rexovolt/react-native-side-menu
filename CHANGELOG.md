@@ -1,6 +1,6 @@
 # Changelog
 
-_This version has not been released yet. These changes are as compared to `@chakrahq/react-native-side-menu` v1.3.4 on NPM._
+_This version was released on 28/11/2023. These changes are as compared to `@chakrahq/react-native-side-menu` v1.3.4 on NPM._
 
 ## v2.0.0
 
