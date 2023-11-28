@@ -9,7 +9,6 @@ import {
   GestureResponderEvent,
   type PanResponderInstance,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import styles from './styles';
 
 type WindowDimensions = { width: number, height: number };
@@ -96,6 +95,8 @@ interface ReactNativeSideMenuProps {
    * @default transparent
    */
   overlayColor?: string;
+  overlayOpacity: number;
+  animateOverlayOpacity: boolean;
   children?: ReactNode;
 }
 
