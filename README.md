@@ -1,8 +1,10 @@
-![npm](https://img.shields.io/npm/v/@chakrahq/react-native-side-menu)
+# @rexovolt/react-native-side-menu
 
-## Customizable side menu for react-native
+![npm badge from shields.io](https://img.shields.io/npm/v/@rexovolt/react-native-side-menu)
 
-| iOS | android |
+This package provides a customizable side menu component for React Native projects.
+
+| iOS | Android |
 | --- | --- |
 | <img src="https://user-images.githubusercontent.com/6936373/71641602-eb969700-2ce1-11ea-9698-c251ccd19b65.png" width="320" />  | <img src="https://user-images.githubusercontent.com/6936373/71641601-eb969700-2ce1-11ea-82e3-c09a63145989.png" width="320" />  |
 
@@ -16,42 +18,35 @@
 
 ### Installation
 ```bash
-npm install @chakrahq/react-native-side-menu --save
+npm install @rexovolt/react-native-side-menu --save
 ```
 
 ### Usage example
-```javascript
-import SideMenu from 'react-native-side-menu'
+```tsx
+import SideMenu from '@rexovolt/react-native-side-menu'
+import {CatSelector}  from './YourMenuComponent'
 
-class ContentView extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+Control+Z for dev menu
-        </Text>
-      </View>
-    );
-  }
+const ContentView = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>
+        kitty cat :3
+      </Text>
+      <Text style={styles.body}>
+        meow!
+      </Text>
+    </View>
+  );
 }
 
-class Application extends React.Component {
-  render() {
-    const menu = <Menu navigator={navigator}/>;
+const Application = () => {
+  const menu = <CatSelector navigator={navigator}/>;
 
-    return (
-      <SideMenu menu={menu}>
-        <ContentView/>
-      </SideMenu>
-    );
-  }
+  return (
+    <SideMenu menu={menu}>
+      <ContentView/>
+    </SideMenu>
+  );
 }
 ```
 
@@ -82,7 +77,7 @@ class Application extends React.Component {
 | overlayOpacity | 1 | Number | Page overlay opacity when sidebar open |
 | animateOverlayOpacity | true | boolean | When true, the page overlay opacity is animated from 0 to overlayOpacity |
 
-### FAQ
+### FAQ/troubleshooting
 
 #### ScrollView does not scroll to top on status bar press
 
@@ -94,18 +89,21 @@ Try disabling remote JS debugging (from developer menu on phone/VD)
 
 #### My SideMenu contents are visible even when the side menu is hidden
 
-Ensure that your main view has a background color applied
+Ensure that your main view has a background color applied:
 
-```
-<Sidemenu menu={menu}>
-<App style={{backgroundColor='white'}} />
+```tsx
+<SideMenu menu={menu}>
+  <App style={{backgroundColor='white'}} />
 </SideMenu>
 ```
 ### Questions?
-Feel free to [create an issue](https://github.com/chakrahq/react-native-side-menu/issues/new)
+Feel free to [open an issue](https://github.com/rexovolt/react-native-side-menu/issues/new).
 
 ### Credits
-This repository is a fork of a fork. Original sources were not maintained for long, so we created this fork and maintain it. We would like to give our thanks and credit for the efforts of the original authors and contributors of these original sources:
-- [Kureev/react-native-side-menu](https://github.com/Kureev/react-native-side-menu)
+
+This repository is a fork of a fork of a fork (talk about a mouthful!). I'd like to give my thanks and credit to the authors of/contributors to the following packages:
+
+- [@chakrahq/react-native-side-menu](https://github.com/chakrahq/react-native-side-menu), which was forked from
+- [Kureev/react-native-side-menu](https://github.com/Kureev/react-native-side-menu), which was forked from
 - [alessiocancian/react-native-side-menu](https://github.com/alessiocancian/react-native-side-menu)
 

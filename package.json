@@ -1,7 +1,7 @@
 {
-  "name": "@chakrahq/react-native-side-menu",
+  "name": "@rexovolt/react-native-side-menu",
   "version": "1.3.4",
-  "description": "Simple customizable component to create side menu",
+  "description": "A simple customizable React Native component to create side menus.",
   "main": "build/index.js",
   "scripts": {
     "build": "babel index.js styles.js -d build",
@@ -9,20 +9,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:chakrahq/react-native-side-menu.git"
+    "url": "git@github.com:rexovolt/react-native-side-menu.git"
   },
   "keywords": [
     "react-native",
     "react-component",
     "ios",
+    "android",
+    "crossplat",
     "sidebar"
   ],
-  "author": "ChakraHQ <engineering@chakrahq.com> (https://github.com/chakrahq)",
+  "author": "Rexogamer <beartechtalks@gmail.com> (https://github.com/rexogamer)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chakrahq/react-native-side-menu/issues"
+    "url": "https://github.com/rexovolt/react-native-side-menu/issues"
   },
-  "homepage": "https://github.com/chakrahq/react-native-side-menu",
+  "homepage": "https://github.com/rexovolt/react-native-side-menu",
   "dependencies": {
     "prop-types": "^15.8.1"
   },
